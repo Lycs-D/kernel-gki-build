@@ -1,0 +1,85 @@
+name: Build on Android 12
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ubuntu-latest
+    runs-on: ubuntu-latest
+    env:
+      kernel_version: android12-5.10
+      os_patch_level: lts
+
+    steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 8192
+          temp-reserve-mb: 2048
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+
+      - name: Install dependencies
+        run: |
+          git config --global user.name "root"
+          git config --global user.email "localhost"
+          sudo apt-get update
+          sudo apt-get autoremove --purge -y azure-cli* docker* ghc* llvm* zulu* firefox* google* dotnet* aspnetcore* powershell* openjdk* mysql* php* mongodb* moby* snap*
+          sudo apt-get upgrade -y
+          sudo apt-get install ntpdate -y
+          sudo timedatectl set-timezone Asia/Shanghai
+          sudo ntpdate -d 0.pool.ntp.org
+
+      - uses: actions/checkout@v4
+        with:
+          path: KernelBuild
+
+      - uses: actions/checkout@v4
+        with:
+          repository: tiann/KernelSU
+          path: KernelSU
+          fetch-depth: 0
+
+      - name: Setup kernel source
+        run: |
+          curl -LSs https://storage.googleapis.com/git-repo-downloads/repo > ./repo
+          chmod a+x ./repo
+          ./repo init --repo-rev=stable --depth=1 -u https://android.googlesource.com/kernel/manifest -b common-${{ env.kernel_version }}-${{ env.os_patch_level }}
+          ./repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
+
+      - name: Setup KernelSU
+        run: |
+          bash KernelSU/kernel/setup.sh main
+          cat KernelSU/kernel/export_symbol.txt | awk '{sub("[ \t]+","");print "  "$0}' >> common/android/abi_gki_aarch64
+          rm -rf common/android/abi_gki_protected_exports_* || echo "No protected exports!"
+          (cd common && git add -A && git commit -a -m "Add KernelSU")
+
+      - name: Setup config
+        run: |
+          if [ "$(ls -A KernelBuild/patchs 2>/dev/null)" ]; then
+            echo "[+] Apply patch ..."
+            (cd common && git am ../KernelBuild/patchs/*.patch)
+          fi
+          echo "[+] Change ..."
+          cp -af KernelBuild/vendor/* common/
+          sed -i '/^\tselect GENERIC_EARLY_IOREMAP/a\\tselect GENERIC_FIND_FIRST_BIT' common/arch/arm64/Kconfig
+          sed -i 's/r416183b/r416183c/g' common/build.config.common
+          (cd common && git add -A && git commit -a -m "Modify")
+
+      - name: Build images
+        env:
+          BUILD_CONFIG: common/build.config.gki.aarch64
+          KCFLAGS: -mcpu=cortex-a55 -mtune=cortex-a55 -O3 -pipe -fvisibility=hidden
+          KCPPFLAGS: -mcpu=cortex-a55 -mtune=cortex-a55 -O3 -pipe -fvisibility=hidden
+        run: |
+          bash build/build.sh
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Image-${{ env.kernel_version }}-${{ env.os_patch_level }}
+          path: out/${{ env.kernel_version }}/dist/Image
+          compression-level: 9

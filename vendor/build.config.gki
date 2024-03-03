@@ -1,0 +1,59 @@
+DEFCONFIG=gki_defconfig
+POST_DEFCONFIG_CMDS="check_defconfig && update_config"
+function update_config() {
+    ${KERNEL_DIR}/scripts/config --file ${OUT_DIR}/.config \
+        --set-val CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE 0x0 \
+        --set-val CONFIG_SND_HDA_PREALLOC_SIZE 2048 \
+        --set-str CONFIG_CMDLINE "stack_depot_disable=on kasan.stacktrace=off cgroup_disable=pressure cgroup.memory=nokmem loglevel=0 mminit_loglevel=0 audit=off cryptomgr.notests dma_debug=off kmemleak=off numa_balancing=disable erst_disable no_console_suspend no_debug_objects nomodeset nowatchdog nosoftlockup initcall_debug=0 printk.devkmsg=off printk.console_no_auto_verbose=1 page_alloc.shuffle=1 skew_tick=1 processor.max_cstate=1" \
+        -d ARCH_HISI \
+        -d IKHEADERS \
+        -d HEADERS_INSTALL \
+        -d DEBUG_INFO \
+        -d DEBUG_MEMORY_INIT \
+        -d DEBUG_MISC \
+        -d BUG_ON_DATA_CORRUPTION \
+        -d UBSAN \
+        -d HIST_TRIGGERS \
+        -d MSDOS_FS \
+        -d VFAT_FS \
+        -e NTFS_FS \
+        -e NTFS_RW \
+        -e SYN_COOKIES \
+        -e TCP_CONG_ADVANCED \
+        -e TCP_CONG_BIC \
+        -e TCP_CONG_WESTWOOD \
+        -e TCP_CONG_HTCP \
+        -e TCP_CONG_DCTCP \
+        -e TCP_CONG_BBR \
+        -e DEFAULT_BBR \
+        -e IP_SET \
+        -e IP_SET_BITMAP_IP \
+        -e IP_SET_BITMAP_IPMAC \
+        -e IP_SET_BITMAP_PORT \
+        -e IP_SET_HASH_IP \
+        -e IP_SET_HASH_IPMARK \
+        -e IP_SET_HASH_IPPORT \
+        -e IP_SET_HASH_IPPORTIP \
+        -e IP_SET_HASH_IPPORTNET \
+        -e IP_SET_HASH_IPMAC \
+        -e IP_SET_HASH_MAC \
+        -e IP_SET_HASH_NETPORTNET \
+        -e IP_SET_HASH_NET \
+        -e IP_SET_HASH_NETNET \
+        -e IP_SET_HASH_NETPORT \
+        -e IP_SET_HASH_NETIFACE \
+        -e IP_SET_LIST_SET \
+        -e NET_SCH_MQPRIO \
+        -e NET_SCH_CAKE \
+        -e NET_SCH_PIE \
+        -e NET_SCH_FQ_PIE \
+        -e NET_SCH_ETS \
+        -e NET_SCH_HFSC \
+        -e NET_SCH_SFB \
+        -e NET_SCH_DEFAULT \
+        -e DEFAULT_FQ_PIE \
+        -e WQ_POWER_EFFICIENT_DEFAULT \
+        -e STRIP_ASM_SYMS
+    (cd ${OUT_DIR} && \
+     make ${CC_LD_ARG} O=${OUT_DIR} olddefconfig)
+}

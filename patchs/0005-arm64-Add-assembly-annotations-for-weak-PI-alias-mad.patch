@@ -1,0 +1,40 @@
+From 1fc401e625392d313eddf280125824a1acbd1e69 Mon Sep 17 00:00:00 2001
+From: Robin Murphy <robin.murphy@arm.com>
+Date: Thu, 27 May 2021 16:34:45 +0100
+Subject: arm64: Add assembly annotations for weak-PI-alias madness
+
+Add yet another set of assembly symbol annotations, this time for the
+borderline-absurd situation of a function aliasing to a weak symbol
+which itself also wants a position-independent alias.
+
+Link: https://lore.kernel.org/r/75545b3c4129b20b887474bb58a9cf302bf2132b.1622128527.git.robin.murphy@arm.com
+Change-Id: I8c69bbdf4f856e5de4644b581daac4bf72bb7495
+Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
+---
+ arch/arm64/include/asm/linkage.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm64/include/asm/linkage.h b/arch/arm64/include/asm/linkage.h
+index ba89a9af820a..9906541a6861 100644
+--- a/arch/arm64/include/asm/linkage.h
++++ b/arch/arm64/include/asm/linkage.h
+@@ -56,8 +56,16 @@
+ 		SYM_FUNC_START_ALIAS(__pi_##x);	\
+ 		SYM_FUNC_START_WEAK(x)
+ 
++#define SYM_FUNC_START_WEAK_ALIAS_PI(x)		\
++		SYM_FUNC_START_ALIAS(__pi_##x);	\
++		SYM_START(x, SYM_L_WEAK, SYM_A_ALIGN)
++
+ #define SYM_FUNC_END_PI(x)			\
+ 		SYM_FUNC_END(x);		\
+ 		SYM_FUNC_END_ALIAS(__pi_##x)
+ 
++#define SYM_FUNC_END_ALIAS_PI(x)		\
++		SYM_FUNC_END_ALIAS(x);		\
++		SYM_FUNC_END_ALIAS(__pi_##x)
++
+ #endif
+-- 
+2.43.0
+

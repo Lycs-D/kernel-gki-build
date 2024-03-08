@@ -1,0 +1,119 @@
+From 48eaeb8452870662fa206dbb5d8a4e1d49718bb0 Mon Sep 17 00:00:00 2001
+From: Mark Rutland <mark.rutland@arm.com>
+Date: Wed, 2 Jun 2021 16:13:58 +0100
+Subject: arm64: Update string routine copyrights and URLs
+
+To make future archaeology easier, let's have the string routine comment
+blocks encode the specific upstream commit ID they were imported from.
+These are the same commit IDs as listed in the commits importing the
+code, expanded to 16 characters. Note that the routines have different
+commit IDs, each reprsenting the latest upstream commit which changed
+the particular routine.
+
+At the same time, let's consistently include 2021 in the copyright
+dates.
+
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20210602151358.35571-1-mark.rutland@arm.com
+Change-Id: I962ad77de021ab16fc8297bda5411e39acd4eb44
+Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
+---
+ arch/arm64/lib/memcmp.S  | 4 ++--
+ arch/arm64/lib/memcpy.S  | 6 +++---
+ arch/arm64/lib/strcmp.S  | 4 ++--
+ arch/arm64/lib/strlen.S  | 4 ++--
+ arch/arm64/lib/strncmp.S | 4 ++--
+ 5 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arm64/lib/memcmp.S b/arch/arm64/lib/memcmp.S
+index 498f0d9941d9..7d956384222f 100644
+--- a/arch/arm64/lib/memcmp.S
++++ b/arch/arm64/lib/memcmp.S
+@@ -1,9 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- * Copyright (c) 2013-2020, Arm Limited.
++ * Copyright (c) 2013-2021, Arm Limited.
+  *
+  * Adapted from the original at:
+- * https://github.com/ARM-software/optimized-routines/blob/master/string/aarch64/memcmp.S
++ * https://github.com/ARM-software/optimized-routines/blob/e823e3abf5f89ecb/string/aarch64/memcmp.S
+  */
+ 
+ #include <linux/linkage.h>
+diff --git a/arch/arm64/lib/memcpy.S b/arch/arm64/lib/memcpy.S
+index 31073a8304fb..b82fd64ee1e1 100644
+--- a/arch/arm64/lib/memcpy.S
++++ b/arch/arm64/lib/memcpy.S
+@@ -1,9 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- * Copyright (c) 2012-2020, Arm Limited.
++ * Copyright (c) 2012-2021, Arm Limited.
+  *
+  * Adapted from the original at:
+- * https://github.com/ARM-software/optimized-routines/blob/master/string/aarch64/memcpy.S
++ * https://github.com/ARM-software/optimized-routines/blob/afd6244a1f8d9229/string/aarch64/memcpy.S
+  */
+ 
+ #include <linux/linkage.h>
+@@ -249,4 +249,4 @@ EXPORT_SYMBOL(__memcpy)
+ SYM_FUNC_END_ALIAS_PI(memmove)
+ EXPORT_SYMBOL(memmove)
+ SYM_FUNC_END_ALIAS(__memmove)
+-EXPORT_SYMBOL(__memmove)
+\ No newline at end of file
++EXPORT_SYMBOL(__memmove)
+diff --git a/arch/arm64/lib/strcmp.S b/arch/arm64/lib/strcmp.S
+index e82ccb6c2f93..d7bee210a798 100644
+--- a/arch/arm64/lib/strcmp.S
++++ b/arch/arm64/lib/strcmp.S
+@@ -1,9 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- * Copyright (c) 2012-2020, Arm Limited.
++ * Copyright (c) 2012-2021, Arm Limited.
+  *
+  * Adapted from the original at:
+- * https://github.com/ARM-software/optimized-routines/blob/master/string/aarch64/strcmp.S
++ * https://github.com/ARM-software/optimized-routines/blob/afd6244a1f8d9229/string/aarch64/strcmp.S
+  */
+ 
+ #include <linux/linkage.h>
+diff --git a/arch/arm64/lib/strlen.S b/arch/arm64/lib/strlen.S
+index b557185b54a5..35fbdb7d6e1a 100644
+--- a/arch/arm64/lib/strlen.S
++++ b/arch/arm64/lib/strlen.S
+@@ -1,9 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- * Copyright (c) 2013, Arm Limited.
++ * Copyright (c) 2013-2021, Arm Limited.
+  *
+  * Adapted from the original at:
+- * https://github.com/ARM-software/optimized-routines/blob/master/string/aarch64/strlen.S
++ * https://github.com/ARM-software/optimized-routines/blob/98e4d6a5c13c8e54/string/aarch64/strlen.S
+  */
+ 
+ #include <linux/linkage.h>
+diff --git a/arch/arm64/lib/strncmp.S b/arch/arm64/lib/strncmp.S
+index 0c0bf5462de0..48d44f7fddb1 100644
+--- a/arch/arm64/lib/strncmp.S
++++ b/arch/arm64/lib/strncmp.S
+@@ -1,9 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- * Copyright (c) 2013, Arm Limited.
++ * Copyright (c) 2013-2021, Arm Limited.
+  *
+  * Adapted from the original at:
+- * https://github.com/ARM-software/optimized-routines/blob/master/string/aarch64/strncmp.S
++ * https://github.com/ARM-software/optimized-routines/blob/e823e3abf5f89ecb/string/aarch64/strncmp.S
+  */
+ 
+ #include <linux/linkage.h>
+-- 
+2.43.0
+

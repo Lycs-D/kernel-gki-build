@@ -1,0 +1,66 @@
+From 8bc11d9bf43f3c5cbf51fbf21cab18fd68df72ae Mon Sep 17 00:00:00 2001
+From: Hong-Mei Li <a21834@motorola.com>
+Date: Tue, 21 Apr 2015 14:53:35 -0700
+Subject: arm64: lib: Memory utilities optimization
+
+Optimize memcpy and memmove, to prefetch several cache lines.
+We can achieve 15% memcpy speed improvement with the preload method.
+
+Change-Id: I2259b98a33eba0b7466920b3f270f953e609cf13
+Signed-off-by: Hong-Mei Li <a21834@motorola.com>
+Reviewed-on: http://gerrit.mot.com/740766
+SLTApproved: Slta Waiver <sltawvr@motorola.com>
+SME-Granted: SME Approvals Granted
+Tested-by: Jira Key <jirakey@motorola.com>
+Reviewed-by: Zhi-Ming Yuan <a14194@motorola.com>
+Submit-Approved: Jira Key <jirakey@motorola.com>
+Signed-off-by: Adithya R <gh0strider.2k18.reborn@gmail.com>
+Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
+---
+ arch/arm64/lib/copy_template.S | 2 ++
+ arch/arm64/lib/memmove.S       | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/arch/arm64/lib/copy_template.S b/arch/arm64/lib/copy_template.S
+index 488df234c49a..427935ae6a49 100644
+--- a/arch/arm64/lib/copy_template.S
++++ b/arch/arm64/lib/copy_template.S
+@@ -39,6 +39,7 @@ C_h	.req	x12
+ D_l	.req	x13
+ D_h	.req	x14
+ 
++	prfm    pldl1strm, [src, #(1*L1_CACHE_BYTES)]
+ 	mov	dst, dstin
+ 	cmp	count, #16
+ 	/*When memory length is less than 16, the accessed are not aligned.*/
+@@ -169,6 +170,7 @@ D_h	.req	x14
+ 	ldp1	C_l, C_h, src, #16
+ 	stp1	D_l, D_h, dst, #16
+ 	ldp1	D_l, D_h, src, #16
++	prfm    pldl1strm, [src, #(4*L1_CACHE_BYTES)]
+ 	subs	count, count, #64
+ 	b.ge	1b
+ 	stp1	A_l, A_h, dst, #16
+diff --git a/arch/arm64/lib/memmove.S b/arch/arm64/lib/memmove.S
+index 1035dce4bdaf..f61e177dbee5 100644
+--- a/arch/arm64/lib/memmove.S
++++ b/arch/arm64/lib/memmove.S
+@@ -47,6 +47,7 @@ D_h	.req	x14
+ 
+ SYM_FUNC_START_ALIAS(__memmove)
+ SYM_FUNC_START_WEAK_PI(memmove)
++	prfm    pldl1strm, [src, #L1_CACHE_BYTES]
+ 	cmp	dstin, src
+ 	b.lo	__memcpy
+ 	add	tmp1, src, count
+@@ -173,6 +174,7 @@ SYM_FUNC_START_WEAK_PI(memmove)
+ 	ldp	C_l, C_h, [src, #-48]
+ 	stp	D_l, D_h, [dst, #-64]!
+ 	ldp	D_l, D_h, [src, #-64]!
++	prfm    pldl1strm, [src, #(4*L1_CACHE_BYTES)]
+ 	subs	count, count, #64
+ 	b.ge	1b
+ 	stp	A_l, A_h, [dst, #-16]
+-- 
+2.43.0
+

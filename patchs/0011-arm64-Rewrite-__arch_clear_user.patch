@@ -1,0 +1,106 @@
+From dedfdf7d7cbee27953212a204f879429eaf75e47 Mon Sep 17 00:00:00 2001
+From: Robin Murphy <robin.murphy@arm.com>
+Date: Thu, 27 May 2021 16:34:48 +0100
+Subject: arm64: Rewrite __arch_clear_user()
+
+Now that we're always using STTR variants rather than abstracting two
+different addressing modes, the user_ldst macro here is frankly more
+obfuscating than helpful. Rewrite __arch_clear_user() with regular
+USER() annotations so that it's clearer what's going on, and take the
+opportunity to minimise the branchiness in the most common paths, while
+also allowing the exception fixup to return an accurate result.
+
+Apparently some folks examine large reads from /dev/zero closely enough
+to notice the loop being hot, so align it per the other critical loops
+(presumably around a typical instruction fetch granularity).
+
+Reviewed-by: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Link: https://lore.kernel.org/r/1cbd78b12c076a8ad4656a345811cfb9425df0b3.1622128527.git.robin.murphy@arm.com
+Signed-off-by: Will Deacon <will@kernel.org>
+Change-Id: Ic58a54695bdc6689fd74f4bef486ff318d27567c
+Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
+---
+ arch/arm64/lib/clear_user.S | 47 +++++++++++++++++++++----------------
+ 1 file changed, 27 insertions(+), 20 deletions(-)
+
+diff --git a/arch/arm64/lib/clear_user.S b/arch/arm64/lib/clear_user.S
+index 48a3a26eff66..a7efb2ad2a1c 100644
+--- a/arch/arm64/lib/clear_user.S
++++ b/arch/arm64/lib/clear_user.S
+@@ -1,12 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+ /*
+- * Based on arch/arm/lib/clear_user.S
+- *
+- * Copyright (C) 2012 ARM Ltd.
++ * Copyright (C) 2021 Arm Ltd.
+  */
+-#include <linux/linkage.h>
+ 
+-#include <asm/asm-uaccess.h>
++#include <linux/linkage.h>
+ #include <asm/assembler.h>
+ 
+ 	.text
+@@ -19,25 +16,33 @@
+  *
+  * Alignment fixed up by hardware.
+  */
++
++	.p2align 4
++	// Alignment is for the loop, but since the prologue (including BTI)
++	// is also 16 bytes we can keep any padding outside the function
+ SYM_FUNC_START(__arch_clear_user)
+-	mov	x2, x1			// save the size for fixup return
++	add	x2, x0, x1
+ 	subs	x1, x1, #8
+ 	b.mi	2f
+ 1:
+-uao_user_alternative 9f, str, sttr, xzr, x0, 8
++USER(9f, sttr	xzr, [x0])
++	add	x0, x0, #8
+ 	subs	x1, x1, #8
+-	b.pl	1b
+-2:	adds	x1, x1, #4
+-	b.mi	3f
+-uao_user_alternative 9f, str, sttr, wzr, x0, 4
+-	sub	x1, x1, #4
+-3:	adds	x1, x1, #2
+-	b.mi	4f
+-uao_user_alternative 9f, strh, sttrh, wzr, x0, 2
+-	sub	x1, x1, #2
+-4:	adds	x1, x1, #1
+-	b.mi	5f
+-uao_user_alternative 9f, strb, sttrb, wzr, x0, 0
++	b.hi	1b
++USER(9f, sttr	xzr, [x2, #-8])
++	mov	x0, #0
++	ret
++
++2:	tbz	x1, #2, 3f
++USER(9f, sttr	wzr, [x0])
++USER(8f, sttr	wzr, [x2, #-4])
++	mov	x0, #0
++	ret
++
++3:	tbz	x1, #1, 4f
++USER(9f, sttrh	wzr, [x0])
++4:	tbz	x1, #0, 5f
++USER(7f, sttrb	wzr, [x2, #-1])
+ 5:	mov	x0, #0
+ 	ret
+ SYM_FUNC_END(__arch_clear_user)
+@@ -45,6 +50,8 @@ EXPORT_SYMBOL(__arch_clear_user)
+ 
+ 	.section .fixup,"ax"
+ 	.align	2
+-9:	mov	x0, x2			// return the original size
++7:	sub	x0, x2, #5	// Adjust for faulting on the final byte...
++8:	add	x0, x0, #4	// ...or the second word of the 4-7 byte case
++9:	sub	x0, x2, x0
+ 	ret
+ 	.previous
+-- 
+2.43.0
+

@@ -4,8 +4,10 @@ function update_config() {
     ${KERNEL_DIR}/scripts/config --file ${OUT_DIR}/.config \
         --set-val CONFIG_MAGIC_SYSRQ_DEFAULT_ENABLE 0x0 \
         --set-val CONFIG_SND_HDA_PREALLOC_SIZE 2048 \
-        --set-str CONFIG_CMDLINE "stack_depot_disable=on kasan.stacktrace=off cgroup_disable=pressure cgroup.memory=nokmem loglevel=0 mminit_loglevel=0 audit=off cryptomgr.notests dma_debug=off kmemleak=off numa_balancing=disable erst_disable no_console_suspend no_debug_objects nomodeset nowatchdog nosoftlockup initcall_debug=0 printk.devkmsg=off printk.console_no_auto_verbose=1 page_alloc.shuffle=1 skew_tick=1 processor.max_cstate=1" \
+        --set-str CONFIG_CMDLINE "stack_depot_disable=on kasan.stacktrace=off cgroup_disable=pressure cgroup.memory=nokmem loglevel=0 noirqdebug mminit_loglevel=0 audit=off cryptomgr.notests dma_debug=off kmemleak=off numa_balancing=disable erst_disable no_console_suspend no_debug_objects nomodeset nowatchdog nosoftlockup initcall_debug=0 printk.devkmsg=off printk.console_no_auto_verbose=1 page_alloc.shuffle=1 skew_tick=1 processor.max_cstate=1" \
         -d ARCH_HISI \
+        -d BINFMT_MISC \
+        -d LDISC_AUTOLOAD \
         -d IKHEADERS \
         -d HEADERS_INSTALL \
         -d DEBUG_INFO \

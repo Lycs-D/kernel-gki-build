@@ -66,14 +66,15 @@ jobs:
           echo "[+] Change ..."
           cp -af KernelBuild/vendor/* common/
           sed -i '/^\tselect GENERIC_EARLY_IOREMAP/a\\tselect GENERIC_FIND_FIRST_BIT' common/arch/arm64/Kconfig
+          sed -i '/^\tselect HAVE_IRQ_TIME_ACCOUNTING/a\\tselect HAVE_LD_DEAD_CODE_DATA_ELIMINATION' common/arch/arm64/Kconfig
           sed -i 's/r416183b/r416183c/g' common/build.config.common
           (cd common && git add -A && git commit -a -m "Modify")
 
       - name: Build images
         env:
           BUILD_CONFIG: common/build.config.gki.aarch64
-          KCFLAGS: -mcpu=cortex-a55 -mtune=cortex-a55 -O3 -pipe -fvisibility=hidden
-          KCPPFLAGS: -mcpu=cortex-a55 -mtune=cortex-a55 -O3 -pipe -fvisibility=hidden
+          KCFLAGS: -mcpu=cortex-a55 -mtune=cortex-a55 -pipe -fvisibility=hidden
+          KCPPFLAGS: -mcpu=cortex-a55 -mtune=cortex-a55 -pipe -fvisibility=hidden
         run: |
           bash build/build.sh
 

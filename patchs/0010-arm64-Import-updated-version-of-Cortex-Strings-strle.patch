@@ -1,4 +1,4 @@
-From a732a9213ffe3607e4d392a48b16b2271fae1cc2 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Sam Tebbs <sam.tebbs@arm.com>
 Date: Thu, 27 May 2021 16:34:43 +0100
 Subject: arm64: Import updated version of Cortex Strings' strlen
@@ -13,11 +13,11 @@ https://github.com/ARM-software/optimized-routines
 Note that for simplicity Arm have chosen to contribute this code
 to Linux under GPLv2 rather than the original MIT license.
 
+Signed-off-by: Sam Tebbs <sam.tebbs@arm.com>
 [ rm: update attribution and commit message ]
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 Link: https://lore.kernel.org/r/32e3489398a24b23ae6e996935ac4818f8fd9dfd.1622128527.git.robin.murphy@arm.com
-
-Change-Id: I439e203ce900c1c74c1a896cbb138c80ffbe9b80
-Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
+Signed-off-by: Will Deacon <will@kernel.org>
 ---
  arch/arm64/lib/strlen.S | 258 +++++++++++++++++++++++++++-------------
  1 file changed, 173 insertions(+), 85 deletions(-)
@@ -316,5 +316,5 @@ index ee3ed882dd79..b557185b54a5 100644
  SYM_FUNC_END_PI(strlen)
  EXPORT_SYMBOL_NOKASAN(strlen)
 -- 
-2.43.0
+2.44.0
 

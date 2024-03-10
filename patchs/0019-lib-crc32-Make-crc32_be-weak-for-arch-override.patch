@@ -1,4 +1,4 @@
-From c4316facffc11af4418c1987af2bc238ae45e5fe Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Kevin Bracey <kevin@bracey.fi>
 Date: Tue, 18 Jan 2022 12:23:49 +0200
 Subject: lib/crc32: Make crc32_be weak for arch override
@@ -7,16 +7,15 @@ crc32_le and __crc32c_le can be overridden - extend this to crc32_be.
 
 Signed-off-by: Kevin Bracey <kevin@bracey.fi>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
 ---
  lib/crc32.c | 5 +++--
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/lib/crc32.c b/lib/crc32.c
-index 2a68dfd3b96c..0f016868c193 100644
+index 7f062a2639df..5649847d0a8d 100644
 --- a/lib/crc32.c
 +++ b/lib/crc32.c
-@@ -208,6 +208,7 @@ EXPORT_SYMBOL(__crc32c_le);
+@@ -206,6 +206,7 @@ EXPORT_SYMBOL(__crc32c_le);
  
  u32 __pure crc32_le_base(u32, unsigned char const *, size_t) __alias(crc32_le);
  u32 __pure __crc32c_le_base(u32, unsigned char const *, size_t) __alias(__crc32c_le);
@@ -24,7 +23,7 @@ index 2a68dfd3b96c..0f016868c193 100644
  
  /*
   * This multiplies the polynomials x and y modulo the given modulus.
-@@ -332,12 +333,12 @@ static inline u32 __pure crc32_be_generic(u32 crc, unsigned char const *p,
+@@ -330,12 +331,12 @@ static inline u32 __pure crc32_be_generic(u32 crc, unsigned char const *p,
  }
  
  #if CRC_BE_BITS == 1
@@ -37,8 +36,8 @@ index 2a68dfd3b96c..0f016868c193 100644
 -u32 __pure crc32_be(u32 crc, unsigned char const *p, size_t len)
 +u32 __pure __weak crc32_be(u32 crc, unsigned char const *p, size_t len)
  {
- 	return crc32_be_generic(crc, p, len,
- 			(const u32 (*)[256])crc32table_be, CRC32_POLY_BE);
+ 	return crc32_be_generic(crc, p, len, crc32table_be, CRC32_POLY_BE);
+ }
 -- 
-2.43.0
+2.44.0
 

@@ -1,4 +1,4 @@
-From 1fc401e625392d313eddf280125824a1acbd1e69 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Robin Murphy <robin.murphy@arm.com>
 Date: Thu, 27 May 2021 16:34:45 +0100
 Subject: arm64: Add assembly annotations for weak-PI-alias madness
@@ -7,9 +7,9 @@ Add yet another set of assembly symbol annotations, this time for the
 borderline-absurd situation of a function aliasing to a weak symbol
 which itself also wants a position-independent alias.
 
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 Link: https://lore.kernel.org/r/75545b3c4129b20b887474bb58a9cf302bf2132b.1622128527.git.robin.murphy@arm.com
-Change-Id: I8c69bbdf4f856e5de4644b581daac4bf72bb7495
-Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
+Signed-off-by: Will Deacon <will@kernel.org>
 ---
  arch/arm64/include/asm/linkage.h | 8 ++++++++
  1 file changed, 8 insertions(+)
@@ -36,5 +36,5 @@ index ba89a9af820a..9906541a6861 100644
 +
  #endif
 -- 
-2.43.0
+2.44.0
 

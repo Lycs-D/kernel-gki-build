@@ -1,7 +1,7 @@
-From 48eaeb8452870662fa206dbb5d8a4e1d49718bb0 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Mark Rutland <mark.rutland@arm.com>
 Date: Wed, 2 Jun 2021 16:13:58 +0100
-Subject: arm64: Update string routine copyrights and URLs
+Subject: arm64: update string routine copyrights and URLs
 
 To make future archaeology easier, let's have the string routine comment
 blocks encode the specific upstream commit ID they were imported from.
@@ -13,12 +13,12 @@ the particular routine.
 At the same time, let's consistently include 2021 in the copyright
 dates.
 
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Robin Murphy <robin.murphy@arm.com>
 Cc: Will Deacon <will@kernel.org>
 Link: https://lore.kernel.org/r/20210602151358.35571-1-mark.rutland@arm.com
-Change-Id: I962ad77de021ab16fc8297bda5411e39acd4eb44
-Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
+Signed-off-by: Will Deacon <will@kernel.org>
 ---
  arch/arm64/lib/memcmp.S  | 4 ++--
  arch/arm64/lib/memcpy.S  | 6 +++---
@@ -115,5 +115,5 @@ index 0c0bf5462de0..48d44f7fddb1 100644
  
  #include <linux/linkage.h>
 -- 
-2.43.0
+2.44.0
 

@@ -1,7 +1,7 @@
-From baf58a4106056c602fdfbea5bc4f835b50da237c Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Kevin Bracey <kevin@bracey.fi>
 Date: Tue, 18 Jan 2022 12:23:51 +0200
-Subject: arm64/lib: crc32: Accelerate crc32_be
+Subject: arm64: lib: accelerate crc32_be
 
 It makes no sense to leave crc32_be using the generic code while we
 only accelerate the little-endian ops.
@@ -28,7 +28,6 @@ Tested-by: Ard Biesheuvel <ardb@kernel.org>
 Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
 ---
  arch/arm64/lib/crc32.S | 87 +++++++++++++++++++++++++++++++++++-------
  1 file changed, 73 insertions(+), 14 deletions(-)
@@ -168,5 +167,5 @@ index 0f9e10ecda23..8340dccff46f 100644
 +	__crc32		be=1
 +SYM_FUNC_END(crc32_be)
 -- 
-2.43.0
+2.44.0
 

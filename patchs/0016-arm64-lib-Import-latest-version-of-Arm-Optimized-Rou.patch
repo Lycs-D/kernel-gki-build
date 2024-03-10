@@ -1,4 +1,4 @@
-From 4f966803700160d2daaf0c59884b57f2725ddf9b Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Joey Gouly <joey.gouly@arm.com>
 Date: Tue, 1 Mar 2022 10:14:33 +0000
 Subject: arm64: lib: Import latest version of Arm Optimized Routines' strcmp
@@ -13,6 +13,7 @@ Note that for simplicity Arm have chosen to contribute this code to Linux under
 GPLv2 rather than the original MIT OR Apache-2.0 WITH LLVM-exception license.
 Arm is the sole copyright holder for this code.
 
+Signed-off-by: Joey Gouly <joey.gouly@arm.com>
 Cc: Robin Murphy <robin.murphy@arm.com>
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
@@ -20,8 +21,7 @@ Cc: Will Deacon <will@kernel.org>
 Acked-by: Mark Rutland <mark.rutland@arm.com>
 Acked-by: Catalin Marinas <catalin.marinas@arm.com>
 Link: https://lore.kernel.org/r/20220301101435.19327-2-joey.gouly@arm.com
-Change-Id: I27534f2fb47d28b7c13018c2ad99609e6619d107
-Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
+Signed-off-by: Will Deacon <will@kernel.org>
 ---
  arch/arm64/lib/strcmp.S | 238 +++++++++++++++++++++-------------------
  1 file changed, 126 insertions(+), 112 deletions(-)
@@ -329,5 +329,5 @@ index d7bee210a798..e6815a3dd265 100644
  
  L(done):
 -- 
-2.43.0
+2.44.0
 

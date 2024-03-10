@@ -1,4 +1,4 @@
-From 4893a3647f2b07592a73f4fb1fa147cb01ca3c5f Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Sam Tebbs <sam.tebbs@arm.com>
 Date: Thu, 27 May 2021 16:34:41 +0100
 Subject: arm64: Import latest version of Cortex Strings' memcmp
@@ -11,12 +11,12 @@ https://github.com/ARM-software/optimized-routines
 Note that for simplicity Arm have chosen to contribute this code
 to Linux under GPLv2 rather than the original MIT license.
 
+Signed-off-by: Sam Tebbs <sam.tebbs@arm.com>
 [ rm: update attribution and commit message ]
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 Acked-by: Mark Rutland <mark.rutland@arm.com>
 Link: https://lore.kernel.org/r/2889de2d41054f3f508fb3addad784a3606ef383.1622128527.git.robin.murphy@arm.com
-
-Change-Id: Idecbefbf2c9b4807a4ef21dc58d0d5194c1efd96
-Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
+Signed-off-by: Will Deacon <will@kernel.org>
 ---
  arch/arm64/lib/memcmp.S | 346 ++++++++++++++--------------------------
  1 file changed, 119 insertions(+), 227 deletions(-)
@@ -393,5 +393,5 @@ index c0671e793ea9..498f0d9941d9 100644
  SYM_FUNC_END_PI(memcmp)
  EXPORT_SYMBOL_NOKASAN(memcmp)
 -- 
-2.43.0
+2.44.0
 

@@ -1,0 +1,99 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Jonathon Reinhart <jonathon.reinhart@gmail.com>
+Date: Mon, 12 Apr 2021 00:24:52 -0400
+Subject: net: Ensure net namespace isolation of sysctls
+
+This adds an ensure_safe_net_sysctl() check during register_net_sysctl()
+to validate that sysctl table entries for a non-init_net netns are
+sufficiently isolated. To be netns-safe, an entry must adhere to at
+least (and usually exactly) one of these rules:
+
+1. It is marked read-only inside the netns.
+2. Its data pointer does not point to kernel/module global data.
+
+An entry which fails both of these checks is indicative of a bug,
+whereby a child netns can affect global net sysctl values.
+
+If such an entry is found, this code will issue a warning to the kernel
+log, and force the entry to be read-only to prevent a leak.
+
+To test, simply create a new netns:
+
+    $ sudo ip netns add dummy
+
+As it sits now, this patch will WARN for two sysctls which will be
+addressed in a subsequent patch:
+- /proc/sys/net/netfilter/nf_conntrack_max
+- /proc/sys/net/netfilter/nf_conntrack_expect_max
+
+Signed-off-by: Jonathon Reinhart <Jonathon.Reinhart@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ net/sysctl_net.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
+
+diff --git a/net/sysctl_net.c b/net/sysctl_net.c
+index d14dab8b6774..f6cb0d4d114c 100644
+--- a/net/sysctl_net.c
++++ b/net/sysctl_net.c
+@@ -115,9 +115,57 @@ __init int net_sysctl_init(void)
+ 	goto out;
+ }
+ 
++/* Verify that sysctls for non-init netns are safe by either:
++ * 1) being read-only, or
++ * 2) having a data pointer which points outside of the global kernel/module
++ *    data segment, and rather into the heap where a per-net object was
++ *    allocated.
++ */
++static void ensure_safe_net_sysctl(struct net *net, const char *path,
++				   struct ctl_table *table)
++{
++	struct ctl_table *ent;
++
++	pr_debug("Registering net sysctl (net %p): %s\n", net, path);
++	for (ent = table; ent->procname; ent++) {
++		unsigned long addr;
++		const char *where;
++
++		pr_debug("  procname=%s mode=%o proc_handler=%ps data=%p\n",
++			 ent->procname, ent->mode, ent->proc_handler, ent->data);
++
++		/* If it's not writable inside the netns, then it can't hurt. */
++		if ((ent->mode & 0222) == 0) {
++			pr_debug("    Not writable by anyone\n");
++			continue;
++		}
++
++		/* Where does data point? */
++		addr = (unsigned long)ent->data;
++		if (is_module_address(addr))
++			where = "module";
++		else if (core_kernel_data(addr))
++			where = "kernel";
++		else
++			continue;
++
++		/* If it is writable and points to kernel/module global
++		 * data, then it's probably a netns leak.
++		 */
++		WARN(1, "sysctl %s/%s: data points to %s global data: %ps\n",
++		     path, ent->procname, where, ent->data);
++
++		/* Make it "safe" by dropping writable perms */
++		ent->mode &= ~0222;
++	}
++}
++
+ struct ctl_table_header *register_net_sysctl(struct net *net,
+ 	const char *path, struct ctl_table *table)
+ {
++	if (!net_eq(net, &init_net))
++		ensure_safe_net_sysctl(net, path, table);
++
+ 	return __register_sysctl_table(&net->sysctls, path, table);
+ }
+ EXPORT_SYMBOL_GPL(register_net_sysctl);
+-- 
+2.44.0
+

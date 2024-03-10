@@ -1,4 +1,4 @@
-From ca3c65efd1a9d859df9a03c16f41141c69f8d1fe Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Robin Murphy <robin.murphy@arm.com>
 Date: Thu, 27 May 2021 16:34:46 +0100
 Subject: arm64: Import latest memcpy()/memmove() implementation
@@ -16,9 +16,9 @@ have now diverged so far that we abandon the shared template idea
 and the damage which that incurred to the tuning of LDP/STP loops.
 We'll be back to tackle those routines separately in future.
 
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 Link: https://lore.kernel.org/r/3c953af43506581b2422f61952261e76949ba711.1622128527.git.robin.murphy@arm.com
-Change-Id: I4e9f23edcf820e287ad025aaeddbba2e76744b99
-Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
+Signed-off-by: Will Deacon <will@kernel.org>
 ---
  arch/arm64/lib/Makefile  |   2 +-
  arch/arm64/lib/memcpy.S  | 272 ++++++++++++++++++++++++++++++++-------
@@ -536,5 +536,5 @@ index 1035dce4bdaf..000000000000
 -SYM_FUNC_END_ALIAS(__memmove)
 -EXPORT_SYMBOL(__memmove)
 -- 
-2.43.0
+2.44.0
 

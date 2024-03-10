@@ -1,4 +1,4 @@
-From 677c6375cc775601c63e8f721e5129e6ad49614b Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Sam Tebbs <sam.tebbs@arm.com>
 Date: Thu, 27 May 2021 16:34:44 +0100
 Subject: arm64: Import latest version of Cortex Strings' strncmp
@@ -11,11 +11,11 @@ https://github.com/ARM-software/optimized-routines
 Note that for simplicity Arm have chosen to contribute this code
 to Linux under GPLv2 rather than the original MIT license.
 
+Signed-off-by: Sam Tebbs <sam.tebbs@arm.com>
 [ rm: update attribution and commit message ]
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 Link: https://lore.kernel.org/r/26110bee02ad360596c9a7536af7eaaf6890d0e8.1622128527.git.robin.murphy@arm.com
-
-Change-Id: Ic6b72737cfcd2fecca6d8ee51df6226cf857c6d0
-Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
+Signed-off-by: Will Deacon <will@kernel.org>
 ---
  arch/arm64/lib/strncmp.S | 406 ++++++++++++++++++---------------------
  1 file changed, 184 insertions(+), 222 deletions(-)
@@ -509,5 +509,5 @@ index 2a7ee949ed47..0c0bf5462de0 100644
  SYM_FUNC_END_PI(strncmp)
  EXPORT_SYMBOL_NOKASAN(strncmp)
 -- 
-2.43.0
+2.44.0
 

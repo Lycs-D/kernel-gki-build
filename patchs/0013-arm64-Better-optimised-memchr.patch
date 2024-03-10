@@ -1,4 +1,4 @@
-From aba30677d7c472af34b3bda48d73019a9445b9f8 Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: Robin Murphy <robin.murphy@arm.com>
 Date: Thu, 27 May 2021 16:34:47 +0100
 Subject: arm64: Better optimised memchr()
@@ -16,9 +16,9 @@ Adding some timing to optimized-routines' memchr() test for a simple
 benchmark, overall this version comes in around half as fast as the SIMD
 code, but still nearly 4x faster than our existing implementation.
 
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
 Link: https://lore.kernel.org/r/58471b42f9287e039dafa9e5e7035077152438fd.1622128527.git.robin.murphy@arm.com
-Change-Id: I6f1e5300003500f1693d0c604d6e323447bd5dad
-Signed-off-by: priiii1808 <priyanshusinghal0818@gmail.com>
+Signed-off-by: Will Deacon <will@kernel.org>
 ---
  arch/arm64/lib/memchr.S | 65 +++++++++++++++++++++++++++++++++--------
  1 file changed, 53 insertions(+), 12 deletions(-)
@@ -108,5 +108,5 @@ index edf6b970a277..7c2276fdab54 100644
  SYM_FUNC_END_PI(memchr)
  EXPORT_SYMBOL_NOKASAN(memchr)
 -- 
-2.43.0
+2.44.0
 

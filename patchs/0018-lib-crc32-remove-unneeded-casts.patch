@@ -1,0 +1,49 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Kevin Bracey <kevin@bracey.fi>
+Date: Tue, 18 Jan 2022 12:23:48 +0200
+Subject: lib/crc32: remove unneeded casts
+
+Casts were added in commit 8f243af42ade ("sections: fix const sections
+for crc32 table") to cope with the tables not being const. They are no
+longer required since commit f5e38b9284e1 ("lib: crc32: constify crc32
+lookup table").
+
+Signed-off-by: Kevin Bracey <kevin@bracey.fi>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+---
+ lib/crc32.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/lib/crc32.c b/lib/crc32.c
+index 2a68dfd3b96c..7f062a2639df 100644
+--- a/lib/crc32.c
++++ b/lib/crc32.c
+@@ -194,13 +194,11 @@ u32 __pure __weak __crc32c_le(u32 crc, unsigned char const *p, size_t len)
+ #else
+ u32 __pure __weak crc32_le(u32 crc, unsigned char const *p, size_t len)
+ {
+-	return crc32_le_generic(crc, p, len,
+-			(const u32 (*)[256])crc32table_le, CRC32_POLY_LE);
++	return crc32_le_generic(crc, p, len, crc32table_le, CRC32_POLY_LE);
+ }
+ u32 __pure __weak __crc32c_le(u32 crc, unsigned char const *p, size_t len)
+ {
+-	return crc32_le_generic(crc, p, len,
+-			(const u32 (*)[256])crc32ctable_le, CRC32C_POLY_LE);
++	return crc32_le_generic(crc, p, len, crc32ctable_le, CRC32C_POLY_LE);
+ }
+ #endif
+ EXPORT_SYMBOL(crc32_le);
+@@ -339,8 +337,7 @@ u32 __pure crc32_be(u32 crc, unsigned char const *p, size_t len)
+ #else
+ u32 __pure crc32_be(u32 crc, unsigned char const *p, size_t len)
+ {
+-	return crc32_be_generic(crc, p, len,
+-			(const u32 (*)[256])crc32table_be, CRC32_POLY_BE);
++	return crc32_be_generic(crc, p, len, crc32table_be, CRC32_POLY_BE);
+ }
+ #endif
+ EXPORT_SYMBOL(crc32_be);
+-- 
+2.44.0
+
